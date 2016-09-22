@@ -1,0 +1,5 @@
+package com.polysoft.policy.xml;
+
+public class Md5XmlProductCreate {
+
+}
