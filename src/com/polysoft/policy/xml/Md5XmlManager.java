@@ -21,8 +21,8 @@ public class Md5XmlManager {
 	public static void main(String[] args) {
 		String filePath = "E:\\cxtest\\nci全量包\\pad2.0生产更新文件全量包\\";
 		String configOutPath = "E:\\cxtest\\nci全量包\\";
-		newMd5Config(filePath, configOutPath);
-		
+//		newMd5Config(filePath, configOutPath);
+		incrementalRelease(ReleaseInfo.getReleaseInfo());
 		System.out.println("====> 完成" );
 	}
 	
@@ -52,13 +52,12 @@ public class Md5XmlManager {
 		ServerConfig serverConfig = PathTool.getServerConfig(environment);
 		
 		ChannelSftp sftp = SFTPManager.connect(serverConfig);
+		SFTPManager.downloadFile(sftp, releaseInfo);
 //		SFTPManager.downloadFile(sftp, fileList, outPath);
+//		System.out.println("==========> 开始上传文件 ");
+//		SFTPManager.uploadFile(sftp, releaseInfo);
 		
-		
-		if(!md5Map.isEmpty()) {
-			
-		}
-		
+		sftp.disconnect();
 	}
 	
 	

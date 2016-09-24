@@ -19,9 +19,9 @@ public class ReleaseInfo {
 		String environment = "17技术测试环境";
 		String version = "2.001.20160922001";
 		String content = "修复各种问题";
-		String releaseFileDir = "E:/cxtest/releaseDir/";
+		String releaseFileDir = "E:/cxtest/releaseDir";
 		String releaseServerDir = "/cxtest/server/transferServer1/deploy/ROOT.war/file/update/all2.0";
-		String backupsFileDir = "E:/cxtest/backups/";
+		String backupsFileDir = "E:/cxtest/backups";
 		
 		ReleaseInfo info = new ReleaseInfo();
 		info.setEnvironment(environment);

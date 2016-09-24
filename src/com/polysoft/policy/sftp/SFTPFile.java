@@ -1,7 +1,5 @@
 package com.polysoft.policy.sftp;
 
-import java.io.File;
-
 import com.polysoft.utils.TextUtil;
 
 public class SFTPFile {

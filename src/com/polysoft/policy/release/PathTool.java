@@ -20,7 +20,24 @@ public class PathTool {
 	}
 	
 	public static ServerConfig getServerConfig(String environment) {
-		return configPath.get(environment);
+		ServerConfig serverConfig = configPath.get(environment);
+		if(null == serverConfig) {
+			serverConfig = initServerConfig();
+			addServerConfig(serverConfig);
+			return initServerConfig();
+		}
+		return serverConfig;
+	}
+	
+	private static ServerConfig initServerConfig() {
+		ServerConfig serverConfig = new ServerConfig();
+		serverConfig.setEnvironment("17技术测试环境");
+		serverConfig.setHost("192.168.180.17");
+		serverConfig.setPort(22);
+		serverConfig.setUsername("root");
+		serverConfig.setPassword("ncl@blrj6");
+		
+		return serverConfig;
 	}
 	
 	public static String getOutMd5FilePath(String directory) {
