@@ -104,7 +104,7 @@ public class XmlManipulateDom implements XmlManipulateImp {
 			Transformer transformer = tf.newTransformer();
 			DOMSource source = new DOMSource(document);
 			//设置编码
-			transformer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			//是否进行代码缩进
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			PrintWriter pw = new PrintWriter(new FileOutputStream(outputFilePath));

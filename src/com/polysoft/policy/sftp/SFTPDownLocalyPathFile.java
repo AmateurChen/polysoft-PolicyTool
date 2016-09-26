@@ -2,11 +2,9 @@ package com.polysoft.policy.sftp;
 
 import java.io.File;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
 import com.polysoft.policy.release.ReleaseInfo;
 
-public class SFTPDownLocalyPathFile extends SFTPOperation{
+public class SFTPDownLocalyPathFile implements SFTPDownImp {
 
 	private String outRootPath;
 	private String releaseServerPath;
@@ -14,7 +12,7 @@ public class SFTPDownLocalyPathFile extends SFTPOperation{
 	
 	public SFTPDownLocalyPathFile(ReleaseInfo info) {
 		// TODO Auto-generated constructor stub
-		this.outRootPath = info.getBackupsFileDir() + "/" + info.getVersion();
+		this.outRootPath = info.getBackupsFileDir();
 		this.releaseServerPath = info.getReleaseServerDir();
 		this.releaseFileDir = info.getReleaseFileDir();
 	}
@@ -26,33 +24,27 @@ public class SFTPDownLocalyPathFile extends SFTPOperation{
 		this.releaseFileDir = releaseRootPath;
 	}
 
-	
-	public void downFile(ChannelSftp sftp) {
-		this.downFile(sftp, new File(this.releaseFileDir));
+	@Override
+	public void downloadFiles(SFTPOperatonImp sftpImp) {
+		// TODO Auto-generated method stub
+		this.downFile(sftpImp, new File(this.releaseFileDir));
 	}
 	
-	public void downFile(ChannelSftp sftp, File file) {
+	public void downFile(SFTPOperatonImp sftpImp, File file) {
 		if(file.isFile()) {
 			String serverFilePath = getServerFilePath(file);
 			String downFileOutPath = getDownFileOutPath(file);
-			this.downFile(sftp, serverFilePath, downFileOutPath);
+			
+			File localyFile = new File(downFileOutPath);
+			if(localyFile.exists()) localyFile.delete();
+			
+			sftpImp.downloadFile(serverFilePath, downFileOutPath);
+			
 		} else {
 			File[] listFiles = file.listFiles();
 			for (int i = 0; i < listFiles.length; i++) {
-				this.downFile(sftp, listFiles[i]);
+				this.downFile(sftpImp, listFiles[i]);
 			}
-		}
-	}
-	
-	private void downFile(ChannelSftp sftp, String filePath, String outPath) {
-		try {
-			File file = new File(outPath);
-			if(file.exists()) file.delete();
-			
-			super.downServerFile(sftp, filePath, file.getParent());
-			System.out.println("文件下载成功=> " + filePath);
-		} catch (SftpException e) {
-			System.err.println("文件下载失败==> " +filePath);
 		}
 	}
 	
@@ -72,4 +64,6 @@ public class SFTPDownLocalyPathFile extends SFTPOperation{
 		
 		return outFilePath;
 	}
+
+	
 }

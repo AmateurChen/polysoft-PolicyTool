@@ -9,7 +9,7 @@ import net.lingala.zip4j.util.Zip4jConstants;
 
 public class ZipUtil {
 
-	public static void compressFile(String compressPath, String password) {
+	public static void compressFiles(String compressPath, String password) {
 		compressFiles(FileUtil.getFile(compressPath), password);
 	}
 	

@@ -2,30 +2,22 @@ package com.polysoft.policy.xml;
 
 import java.util.Map;
 
-import com.jcraft.jsch.ChannelSftp;
 import com.polysoft.policy.imp.OperationXmlInfoImp;
 import com.polysoft.policy.release.PathTool;
 import com.polysoft.policy.release.ReleaseFile;
 import com.polysoft.policy.release.ReleaseInfo;
-import com.polysoft.policy.release.ServerConfig;
-import com.polysoft.policy.sftp.SFTPConnectParamter;
-import com.polysoft.policy.sftp.SFTPManager;
+import com.polysoft.policy.release.ServerConfigInfo;
+import com.polysoft.policy.sftp.SFTPDownLocalyPathFile;
+import com.polysoft.policy.sftp.SFTPOperation;
+import com.polysoft.policy.sftp.SFTPOperatonImp;
+import com.polysoft.policy.sftp.SFTPUpload;
 import com.polysoft.utils.FileUtil;
-import com.polysoft.utils.RegexUtil;
 import com.polysoft.xml.XmlManipulateDom;
 import com.polysoft.xml.XmlManipulateDomImp;
 import com.polysoft.xml.XmlManipulateImp;
 
 public class Md5XmlManager {
 
-	public static void main(String[] args) {
-		String filePath = "E:\\cxtest\\nci全量包\\pad2.0生产更新文件全量包\\";
-		String configOutPath = "E:\\cxtest\\nci全量包\\";
-//		newMd5Config(filePath, configOutPath);
-		incrementalRelease(ReleaseInfo.getReleaseInfo());
-		System.out.println("====> 完成" );
-	}
-	
 	public static void newMd5Config(String releaseFileDir, String configOutPath) {
 		ReleaseFile releaseFile = new ReleaseFile(releaseFileDir);
 		Map<String, OperationXmlInfoImp> md5Map = releaseFile.getMd5Map();
@@ -43,21 +35,29 @@ public class Md5XmlManager {
 		}
 	}
 	
-	public static void incrementalRelease(ReleaseInfo releaseInfo) {
-		ReleaseFile releaseFile = new ReleaseFile(releaseInfo.getReleaseFileDir());
+	public static void incrementalRelease(ReleaseInfo info) {
+		String backupsPath = info.getBackupsFileDir() + "/" + info.getVersion();
+		String releaseFilesPath = info.getReleaseFileDir();
+		String serverPath = info.getReleaseServerDir();
+		
+		ReleaseFile releaseFile = new ReleaseFile(releaseFilesPath);
 		Map<String, OperationXmlInfoImp> md5Map = releaseFile.getMd5Map();
 		Map<String, OperationXmlInfoImp> productMd5Map = releaseFile.getProductMd5Map();
+		if(md5Map.isEmpty() || productMd5Map.isEmpty()) {
+			System.err.println("需要发布的文件为空==> "+ releaseFilesPath);
+			return ;
+		}
 		
-		String environment = releaseInfo.getEnvironment();
-		ServerConfig serverConfig = PathTool.getServerConfig(environment);
+		String environment = info.getEnvironment();
+		ServerConfigInfo serverConfig = PathTool.getServerConfig(environment);
+		SFTPOperatonImp sftpImp = new SFTPOperation(serverConfig);
+		//下载文件备份
+		sftpImp.downloadFile(new SFTPDownLocalyPathFile(serverPath, releaseFilesPath, backupsPath));
 		
-		ChannelSftp sftp = SFTPManager.connect(serverConfig);
-		SFTPManager.downloadFile(sftp, releaseInfo);
-//		SFTPManager.downloadFile(sftp, fileList, outPath);
-//		System.out.println("==========> 开始上传文件 ");
-//		SFTPManager.uploadFile(sftp, releaseInfo);
+		// 上传文件
+		sftpImp.uploadFile(new SFTPUpload(serverPath, releaseFilesPath));
 		
-		sftp.disconnect();
+		sftpImp.close();
 	}
 	
 	

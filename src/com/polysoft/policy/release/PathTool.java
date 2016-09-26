@@ -7,7 +7,7 @@ import com.polysoft.utils.TextUtil;
 
 public class PathTool {
 
-	private static final Map<String, ServerConfig> configPath = new HashMap<String, ServerConfig>();
+	private static final Map<String, ServerConfigInfo> configPath = new HashMap<String, ServerConfigInfo>();
 	
 	
 	
@@ -15,12 +15,12 @@ public class PathTool {
 	
 	
 	
-	public static void addServerConfig(ServerConfig config) {
+	public static void addServerConfig(ServerConfigInfo config) {
 		configPath.put(config.getEnvironment(), config);
 	}
 	
-	public static ServerConfig getServerConfig(String environment) {
-		ServerConfig serverConfig = configPath.get(environment);
+	public static ServerConfigInfo getServerConfig(String environment) {
+		ServerConfigInfo serverConfig = configPath.get(environment);
 		if(null == serverConfig) {
 			serverConfig = initServerConfig();
 			addServerConfig(serverConfig);
@@ -29,14 +29,15 @@ public class PathTool {
 		return serverConfig;
 	}
 	
-	private static ServerConfig initServerConfig() {
-		ServerConfig serverConfig = new ServerConfig();
+	private static ServerConfigInfo initServerConfig() {
+		ServerConfigInfo serverConfig = new ServerConfigInfo();
 		serverConfig.setEnvironment("17技术测试环境");
 		serverConfig.setHost("192.168.180.17");
 		serverConfig.setPort(22);
 		serverConfig.setUsername("root");
 		serverConfig.setPassword("ncl@blrj6");
-		
+		serverConfig.setServerRootPath("/cxtest/server/transferServer1/deploy/ROOT.war/file");
+		serverConfig.setVersionConfigFilePath("");
 		return serverConfig;
 	}
 	

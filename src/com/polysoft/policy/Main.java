@@ -1,11 +1,5 @@
 package com.polysoft.policy;
 
-import java.util.List;
-
-import com.jcraft.jsch.ChannelSftp;
-import com.polysoft.policy.sftp.SFTPFile;
-import com.polysoft.policy.sftp.SFTPManager;
-import com.polysoft.utils.TextUtil;
 
 public class Main {
 

@@ -2,7 +2,7 @@ package com.polysoft.policy.release;
 
 import com.polysoft.utils.TextUtil;
 
-public class ServerConfig {
+public class ServerConfigInfo {
 
 	// 环境标识
 	private String environment;
@@ -106,7 +106,7 @@ public class ServerConfig {
 	}
 	
 	public String getVersionConfigFilePath() {
-		if(TextUtil.isEmpty(this.productMd5FilePath)) {
+		if(TextUtil.isEmpty(this.versionConfigFilePath)) {
 			return this.serverRootPath + "/download2.0/versionConfig.properties";
 		}
 		return versionConfigFilePath;
@@ -117,7 +117,7 @@ public class ServerConfig {
 	}
 	
 	public String getUpdateContentsFilePath() {
-		if(TextUtil.isEmpty(this.productMd5FilePath)) {
+		if(TextUtil.isEmpty(this.updateContentsFilePath)) {
 			return this.serverRootPath + "/download2.0/updateContents.properties";
 		}
 		return updateContentsFilePath;

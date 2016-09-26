@@ -2,10 +2,9 @@ package com.polysoft.policy.sftp;
 
 import java.io.File;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
+import com.polysoft.policy.release.ReleaseInfo;
 
-public class SFTPUpload extends SFTPOperation {
+public class SFTPUpload implements SFTPUploadImp {
 
 	private String upServerPathDir;
 	private String upFilePath;
@@ -16,25 +15,28 @@ public class SFTPUpload extends SFTPOperation {
 		this.upServerPathDir = upServerPathDir;
 	}
 	
-	
-	public void upload(ChannelSftp sftp) {
-		
-		File[] listFiles = new File(this.upFilePath).listFiles();
-		for (int i = 0; i < listFiles.length; i++) {
-			this.upload(sftp, this.upServerPathDir, listFiles[i]);
-		}
-		
+	public SFTPUpload(ReleaseInfo info) {
+		this.upFilePath = info.getReleaseFileDir();
+		this.upServerPathDir = info.getReleaseServerDir();
 	}
 	
+	@Override
+	public void uploadFiles(SFTPOperatonImp sftpImp) {
+		// TODO Auto-generated method stub
+		File[] listFiles = new File(this.upFilePath).listFiles();
+		for (int i = 0; i < listFiles.length; i++) {
+			this.upload(sftpImp, this.upServerPathDir, listFiles[i]);
+		}
+	}
 	
-	public void upload(ChannelSftp sftp, String upServerPathDir, File file) {
+	private void upload(SFTPOperatonImp sftpImp, String upServerPathDir, File file) {
 		if(file.isFile()) {
-			this.upload(sftp, upServerPathDir, file.getAbsolutePath());
+			sftpImp.uploadFile(upServerPathDir, file.getAbsolutePath());
 		} else {
 			upServerPathDir += "/" + file.getName();
-			boolean isExists = super.cdDirectory(sftp, upServerPathDir);
+			boolean isExists = sftpImp.changeDirectory(upServerPathDir);
 			if(!isExists) {
-				if(!super.mkdirDirectory(sftp, upServerPathDir)) {
+				if(!sftpImp.mkdirDirectory(upServerPathDir)) {
 					//SFTP 创建文件夹失败
 					return ;
 				}
@@ -42,18 +44,9 @@ public class SFTPUpload extends SFTPOperation {
 			
 			File[] listFiles = file.listFiles();
 			for (int i = 0; i < listFiles.length; i++) {
-				this.upload(sftp, upServerPathDir, listFiles[i]);
+				this.upload(sftpImp, upServerPathDir, listFiles[i]);
 			}
 		}
 	}
 	
-	
-	public void upload(ChannelSftp sftp, String upServerPathDir, String filePath) {
-		try {
-			super.uploadLocallyFile(sftp, upServerPathDir+"/", filePath.replaceAll("[\\\\]", "/"));
-			System.out.println("上传成功=> "+ filePath);
-		} catch (SftpException e) {
-			System.err.println("上传失败=> "+ filePath);
-		}
-	}
 }

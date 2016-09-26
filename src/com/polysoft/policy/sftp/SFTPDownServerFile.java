@@ -3,10 +3,7 @@ package com.polysoft.policy.sftp;
 import java.io.File;
 import java.util.List;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.SftpException;
-
-public class SFTPDownServerFile extends SFTPOperation {
+public class SFTPDownServerFile implements SFTPDownImp{
 
 	private String serverDownPath;
 	private String outRootPath;
@@ -17,35 +14,28 @@ public class SFTPDownServerFile extends SFTPOperation {
 		this.outRootPath = outRootPath;
 	}
 	
-	public void downFile(ChannelSftp sftp) {
-		List<SFTPFile> files = super.getDirectoryFiles(sftp, this.serverDownPath);
+	@Override
+	public void downloadFiles(SFTPOperatonImp sftpImp) {
+		// TODO Auto-generated method stub
+		List<SFTPFile> files = sftpImp.getDirFiles(this.serverDownPath);
 		for (SFTPFile file : files) {
-			this.downFile(sftp, file, this.outRootPath);
+			this.downFile(sftpImp, file, this.outRootPath);
 		}
 	}
 	
-	public void downFile(ChannelSftp sftp, SFTPFile file, String outPath) {
+	public void downFile(SFTPOperatonImp sftpImp, SFTPFile file, String outPath) {
 		if(file.isDirectory()) {
 			File outDirFile = new File(outPath +"/"+ file.getFileName());
 			if(!outDirFile.exists()) outDirFile.mkdirs();
-			
-			List<SFTPFile> files = super.getDirectoryFiles(sftp, file.getFileName());
+			List<SFTPFile> files = sftpImp.getDirFiles(file.getFilePath());
 			for (SFTPFile sftpFile : files) {
-				this.downFile(sftp, sftpFile, outDirFile.getAbsolutePath());
+				this.downFile(sftpImp, sftpFile, outDirFile.getAbsolutePath());
 			}
 		} else {
-			this.downFile(sftp, file.getFileName(), outPath);
+			File localyFile = new File(outPath);
+			if(localyFile.exists()) localyFile.delete();
+			sftpImp.downloadFile(file.getFilePath(), outPath);
 		}
 	}
 	
-	private void downFile(ChannelSftp sftp, String filePath, String outPath) {
-		try {
-			File file = new File(outPath);
-			if(file.exists()) file.delete();
-			
-			super.downServerFile(sftp, filePath, outPath);
-		} catch (SftpException e) {
-			e.printStackTrace();
-		}
-	}
 }
