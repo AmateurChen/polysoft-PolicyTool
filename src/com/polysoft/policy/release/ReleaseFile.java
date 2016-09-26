@@ -8,7 +8,6 @@ import com.polysoft.policy.imp.OperationXmlInfoImp;
 import com.polysoft.policy.xml.Md5ProductXmlInfo;
 import com.polysoft.policy.xml.Md5XmlApkInfo;
 import com.polysoft.policy.xml.Md5XmlInfo;
-import com.polysoft.utils.FileUtil;
 import com.polysoft.utils.MD5FileUtil;
 import com.polysoft.utils.RegexUtil;
 
@@ -23,13 +22,13 @@ public class ReleaseFile {
 	public ReleaseFile(String releaseDir) {
 		// TODO Auto-generated constructor stub
 		this.md5util = new MD5FileUtil();
-		this.releasefileDir = FileUtil.getFile(releaseDir);
+		this.releasefileDir = new File(releaseDir);
 		this.initFiles(releasefileDir);
 	}
 	
 	private void initFiles(File file) {
-		if(FileUtil.isDirectory(file)) {
-			File[] files = FileUtil.getFiles(file);
+		if(!file.isFile()) {
+			File[] files = file.listFiles();
 			for (int i = 0; i < files.length; i++) {
 				initFiles(files[i]);
 			}

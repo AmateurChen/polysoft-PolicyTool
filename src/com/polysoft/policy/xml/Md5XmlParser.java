@@ -1,5 +1,6 @@
 package com.polysoft.policy.xml;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,7 +11,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.polysoft.policy.imp.OperationXmlInfoImp;
-import com.polysoft.utils.FileUtil;
 import com.polysoft.xml.XmlManipulateDom;
 import com.polysoft.xml.XmlManipulateDomImp;
 import com.polysoft.xml.XmlManipulateImp;
@@ -23,7 +23,7 @@ public class Md5XmlParser implements XmlManipulateDomImp {
 		String filePath = "C:\\Users\\Thinkpad\\Desktop\\md5_2.0.xml";
 		XmlManipulateImp imp = new XmlManipulateDom();
 		try {
-			Map<?, ?> result = (Map<?, ?>) imp.parser(new Md5XmlParser(), FileUtil.getFile(filePath));
+			Map<?, ?> result = (Map<?, ?>) imp.parser(new Md5XmlParser(), new File(filePath));
 			Iterator<?> iterator = result.keySet().iterator();
 			while(iterator.hasNext()) {
 				Object key = iterator.next();

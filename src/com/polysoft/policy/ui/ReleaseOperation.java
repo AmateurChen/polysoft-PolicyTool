@@ -126,7 +126,7 @@ public class ReleaseOperation {
 		File compressFiles = new File(info.getBackupsFileDir());
 		ZipUtil.compressFiles(compressFiles, compressFiles.getParentFile(), compressFiles.getName(), "polysoft");
 		System.out.println("==> " + "压缩文件完成");
-		compressFiles.delete();
+		FileUtil.deleteFile(compressFiles);
 	}
 	
 	private void uploadUpdateVersionConfig(String releaseVersion, String releaseFileDir) {

@@ -8,119 +8,97 @@ import java.io.IOException;
 public class FileUtil {
 	
 	public static boolean isFile(String filePath) {
-		return isFile(getFile(filePath));
+		return new File(filePath).isFile();
 	}
 	
-	public static boolean isFile(File file) {
-		return file.isFile();
+	
+	public static boolean isDirectory(String filePath) {
+		return !isFile(filePath);
 	}
 	
-	public static boolean isDirectory(File file) {
-		return !file.isFile();
+	public static File getDirectoryFile(File file) {
+		if(file.isFile()) {
+			return file.getParentFile();
+		}
+		return file;
 	}
 	
-	public static boolean isDirectory(String fileDirectory) {
-		return isDirectory(getFile(fileDirectory));
+	public static File getDirectoryFile(String filePath) {
+		return getDirectoryFile(new File(filePath));
 	}
 	
-	public static boolean createDirectory(File file) {
-		if(!isDirectory(file))
-			return false;
-		
-		if(!isExists(file))
+	
+	public static boolean createDirectory(String filePath) {
+		File file = new File(filePath);
+		if(file.isFile()) {
+			return file.getParentFile().mkdirs();
+		} else {
 			return file.mkdirs();
-		
-		return true;
-	}
-	
-	public static boolean createDirectory(String fileDirectory) {
-		return createDirectory(getFile(fileDirectory));
-	}
-	
-	public static File getFile(String filePath) {
-		return new File(filePath);
+		}
 	}
 	
 	public static boolean isExists(String filePath) {
-		File file = getFile(filePath);
-		return  file.exists();
-//		return isExists(getFile(filePath));
-	}
-	
-	public static boolean isExists(File file) {
-		return file.exists();
+		return  new File(filePath).exists();
 	}
 	
 	public static boolean reNameFile(File file, File reNameFile) {
-		if(!isExists(file))
-			return false;
-		
 		return file.renameTo(reNameFile);
 	}
 	
 	public static boolean reNameFile(String filePath, File reNameFile) {
-		return reNameFile(getFile(filePath), reNameFile);
+		return reNameFile(new File(filePath), reNameFile);
 	}
 	
 	public static boolean reNameFile(File file, String reNamefilePath) {
-		return reNameFile(file, getFile(reNamefilePath));
+		return reNameFile(file, new File(reNamefilePath));
 	}
 	
 	public static boolean reNameFile(String filePath, String reNamefilePath) {
-		return reNameFile(getFile(filePath), getFile(reNamefilePath));
+		return reNameFile(new File(filePath), reNamefilePath);
 	}
 	
-	public static boolean createFile(File file, boolean isDelete) throws IOException {
+	public static void createFile(File file, boolean isDelete) throws IOException {
 		
-		if(!isExists(file.getParentFile())) {
-			file.getParentFile().mkdirs();
-		}
-		
-		if(!isExists(file)) {
-			return file.createNewFile();
-		} else {
-			if(isDelete) {
-				file.delete();
-				return file.createNewFile();
-			}
-			return true;
+		createDirectory(file.getAbsolutePath());
+		if(isDelete) {
+			file.delete();
+			file.createNewFile();
+		} else if(!file.exists()){
+			file.createNewFile();
 		}
 	}
 	
 	public static File createFile(String filePath, boolean isDelete) throws IOException {
-		File file = getFile(filePath);
-		boolean isSuccess = createFile(file, isDelete);
-		return isSuccess ? file : null;
+		File file = new File(filePath);
+		createFile(file, isDelete);
+		return file;
 	}
 	
-	public static File[] getFiles(File file) {
-		if(!isExists(file) || isFile(file)) {
-			return new File[0];
-		}
-		
-		return file.listFiles();
-	}
 	
 	public static File[] getFiles(String filePath) {
-		return getFiles(getFile(filePath));
+		return new File(filePath).listFiles();
 	}
 	
-	public static boolean deleteFile(File file) {
-		if(isExists(file))
-			return file.delete();
-		else
-			return false;
+	public static void deleteFile(File file) {
+		if(file.isFile()) {
+			file.delete();
+		} else {
+			File[] listFiles = file.listFiles();
+			for (int i = 0; i < listFiles.length; i++) {
+				deleteFile(listFiles[i]);
+			}
+		}
 	}
 	
-	public static boolean deleteFile(String filePath) {
-		return deleteFile(getFile(filePath));
+	public static void deleteFile(String filePath) {
+		deleteFile(new File(filePath));
 	}
 
 	public static boolean copyFile(File file, File copyFile) {
-		if(!isExists(file))
+		if(!file.exists())
 			return false;
 		
-		if(isExists(copyFile))
+		if(copyFile.exists())
 			copyFile.delete();
 		
 		FileInputStream fis = null;
@@ -158,14 +136,24 @@ public class FileUtil {
 	}
 
 	public static boolean moveFile(File file, File fileDirectory) {
-		if(!isExists(file))
+		if(!file.exists())
 			return false;
-		
-		if(!createDirectory(fileDirectory)) 
-			return false;
+		else if(!file.isFile()) {
+			File[] listFiles = file.listFiles();
+			File outPutFileDir = new File(getDirectoryFile(fileDirectory) + "/" + file.getName());
+			for (int i = 0; i < listFiles.length; i++) {
+				moveFile(listFiles[i], outPutFileDir);
+			}
+		}
+		if(fileDirectory.isFile()) {
+			fileDirectory = fileDirectory.getParentFile();
+		}
+		if(!fileDirectory.exists()) {
+			fileDirectory.mkdirs();
+		} 
 		
 		File moveFile = new File(fileDirectory.getAbsolutePath() + File.separator + file.getName());
-		if(isExists(moveFile))
+		if(moveFile.exists())
 			deleteFile(moveFile);
 		
 		FileInputStream fis = null;
@@ -202,13 +190,6 @@ public class FileUtil {
 		}
 		
 		return false;
-	}
-	
-	public static void main(String[] args) {
-		String filePath = "C:\\Users\\ThinkPad\\Desktop\\���²�Ʒ�����?.xlsx";
-		String fileDirectory = "E:\\workSpaces\\Magnum Mobile\\�����ĵ�";
-		boolean isMove = moveFile(getFile(filePath), getFile(fileDirectory));
-		System.out.println("�ļ��ƶ�===> "+ isMove);
 	}
 	
 }

@@ -10,7 +10,7 @@ import net.lingala.zip4j.util.Zip4jConstants;
 public class ZipUtil {
 
 	public static void compressFiles(String compressPath, String password) {
-		compressFiles(FileUtil.getFile(compressPath), password);
+		compressFiles(new File(compressPath), password);
 	}
 	
 	public static void compressFiles(File compressFile, String password) {
@@ -22,17 +22,17 @@ public class ZipUtil {
 	}
 	
 	public static void compressFiles(String compressPath, String outDirPath, String fileName, String password) {
-		compressFiles(FileUtil.getFile(compressPath), FileUtil.getFile(outDirPath), fileName,  password);
+		compressFiles(new File(compressPath), new File(outDirPath), fileName,  password);
 	}
 	
 	public static void compressFiles(File compressFile, File outDirectory, String fileName, String password) {
-		if(!FileUtil.isExists(compressFile)) {
+		if(!compressFile.exists()) {
 			System.err.println("需要压缩的文件未找到===>" + compressFile.getAbsolutePath());
 			return ;
-		} else if(!FileUtil.isDirectory(outDirectory)) {
+		} else if(outDirectory.isFile()) {
 			System.err.println("压缩输出地址必须为目录地址===>" + outDirectory.getAbsolutePath());
 			return ;
-		} else if(!FileUtil.isExists(outDirectory)) {
+		} else if(!outDirectory.exists()) {
 			if(!outDirectory.mkdirs()){
 				System.err.println("压缩输出地址创建错误===>" + outDirectory.getAbsolutePath());
 			}

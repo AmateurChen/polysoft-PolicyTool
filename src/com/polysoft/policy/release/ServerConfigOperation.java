@@ -132,12 +132,9 @@ public class ServerConfigOperation {
 	
 	public void backupsDownloadConfigFile(String outPathDir) {
 		File file = new File(this.tempFileDirPath);
-		File[] files = file.listFiles();
 		File outPathFileDir = new File(outPathDir);
-		for (int i = 0; i < files.length; i++) {
-			FileUtil.moveFile(files[i], outPathFileDir);
-		}
-		file.delete();
+		FileUtil.moveFile(file, outPathFileDir);
+		FileUtil.deleteFile(file);
 	}
 	
 	@SuppressWarnings("unchecked")
