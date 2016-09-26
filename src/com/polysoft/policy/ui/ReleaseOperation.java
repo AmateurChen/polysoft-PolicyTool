@@ -27,38 +27,15 @@ public class ReleaseOperation {
 
 	SFTPOperatonImp sftpImp;
 	ServerConfigOperation serverConfig;
+	ReleaseInfo info;
 	
-	public static void main(String[] args) {
-		
-		ReleaseInfo info = new ReleaseInfo();
-		// 发布环境
-		info.setEnvironment("17技术测试环境");
-		// 发布版本
-		info.setVersion("2.001.20160926001");
-		// 发布内容
-		info.setContent("11");
-		// 备份目录
-		info.setBackupsFileDir("E:/cxtest/backups");
-		// 发布至服务端目录
-		info.setReleaseServerDir("/cxtest/server/transferServer1/deploy/ROOT.war/file/update/all2.0");
-		// 发布文件目录
-		info.setReleaseFileDir("E:/cxtest/releaseDir");
-		
-		ReleaseOperation operation = new ReleaseOperation();
-		String checkResult = operation.checkReleaseInfo(info);
-		if(!TextUtil.isEmpty(checkResult)) {
-			System.out.println(checkResult);
-		} else {
-			operation.initSftpImp(info.getEnvironment());
-			operation.clickRelease(info);
-		}
-	}
-	
-	public ReleaseOperation() {
+	public ReleaseOperation(ReleaseInfo info) {
 		// TODO Auto-generated constructor stub
+		this.info = info;
+		this.initSftpImp(info.getEnvironment());
 	}
 	
-	private void clickRelease(ReleaseInfo info) {
+	public void clickRelease() {
 		this.initBackupsFilePath(info);
 		System.out.println("==> " + "开始备份文件");
 		//备份
