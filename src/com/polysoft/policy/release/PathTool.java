@@ -31,7 +31,7 @@ public class PathTool {
 	
 	private static ServerConfigInfo initServerConfig() {
 		ServerConfigInfo serverConfig = new ServerConfigInfo();
-		serverConfig.setEnvironment("17¼¼Êõ²âÊÔ»·¾³");
+		serverConfig.setEnvironment("17æŠ€æœ¯æµ‹è¯•çŽ¯å¢ƒ");
 		serverConfig.setHost("192.168.180.17");
 		serverConfig.setPort(22);
 		serverConfig.setUsername("root");

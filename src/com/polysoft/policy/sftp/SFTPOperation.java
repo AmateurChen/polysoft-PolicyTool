@@ -155,7 +155,7 @@ public class SFTPOperation implements SFTPOperatonImp {
 	
 	private SFTPFile transFile(LsEntry ls, String parentPath) {
 		SFTPFile file = new SFTPFile();
-		if(ls.getLongname().startsWith("d")) {// Ŀ¼
+		if(ls.getLongname().startsWith("d")) {// 目录
 			file.setDirectory(true);
 		} else {
 			file.setDirectory(false);

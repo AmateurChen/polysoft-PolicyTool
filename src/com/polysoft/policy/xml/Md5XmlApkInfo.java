@@ -11,15 +11,15 @@ import com.polysoft.utils.RegexUtil;
 
 public class Md5XmlApkInfo implements OperationXmlInfoImp {
 
-	// ÊÇ·ñÎª±ØĞëÉı¼¶1£¬0
+	// æ˜¯å¦ä¸ºå¿…é¡»å‡çº§1ï¼Œ0
 	private String isUpdate;
-	//Â·¾¶ /nci/...
+	//è·¯å¾„ /nci/...
 	private String path;
-	//ÎÄ¼şµÄmd5
+	//æ–‡ä»¶çš„md5
 	private String md5;
-	// ÎÄ¼şµÄ´óĞ¡
+	// æ–‡ä»¶çš„å¤§å°
 	private long size;
-	// apk °üÃû
+	// apk åŒ…å
 	private String packageName;
 	
 	@Override

@@ -17,9 +17,9 @@ public class ProgressMonitor implements SftpProgressMonitor{
 		this.fileSize = paramLong;
 		
 		if(paramInt == PUT) {
-			title = "上传文件 " + paramString2;
+			title = "涓婁紶鏂囦欢 " + paramString2;
 		} else if(paramInt == GET) {
-			title ="下载文件" + paramString1 ;
+			title ="涓嬭浇鏂囦欢" + paramString1 ;
 		}
 	}
 
@@ -30,7 +30,7 @@ public class ProgressMonitor implements SftpProgressMonitor{
 			this.downloadSize += paramLong;
 			double d = ((double)downloadSize * 100)/(double)fileSize;
 			DecimalFormat df = new DecimalFormat( "#.##"); 
-			System.out.println(this.title + " 进度===>" + df.format(d) + "%");
+			System.out.println(this.title + " 杩涘害===>" + df.format(d) + "%");
 		}
 		
 		return true;
@@ -39,7 +39,7 @@ public class ProgressMonitor implements SftpProgressMonitor{
 	@Override
 	public void end() {
 		// TODO Auto-generated method stub
-		System.out.println(this.title + " 完成");
+		System.out.println(this.title + " 瀹屾垚");
 	}
 
 }

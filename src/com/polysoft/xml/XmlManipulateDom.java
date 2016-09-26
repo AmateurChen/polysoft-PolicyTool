@@ -37,11 +37,11 @@ public class XmlManipulateDom implements XmlManipulateImp {
 			Document document = documentBuilder.parse(xmlStream);
 			return domImp.manipulate(document);
 		} catch (ParserConfigurationException e) {
-			throw new Exception("³õÊ¼»¯DOMÒì³££¨0x00001£©", e);
+			throw new Exception("åˆå§‹åŒ–DOMå¼‚å¸¸ï¼ˆ0x00001ï¼‰", e);
 		} catch (SAXException e) {
-			throw new Exception("³õÊ¼»¯DOMÒì³££¨0x00002£©", e);
+			throw new Exception("åˆå§‹åŒ–DOMå¼‚å¸¸ï¼ˆ0x00002ï¼‰", e);
 		} catch (IOException e) {
-			throw new Exception("XML¼ÓÔØDOMÒì³££¨0x00003£©", e);
+			throw new Exception("XMLåŠ è½½DOMå¼‚å¸¸ï¼ˆ0x00003ï¼‰", e);
 		}
 	}
 
@@ -71,7 +71,7 @@ public class XmlManipulateDom implements XmlManipulateImp {
 	public Object parser(XmlManipulateDomImp domImp, String xmlInfo) throws Exception{
 		// TODO Auto-generated method stub
 		if(TextUtil.isEmpty(xmlInfo)) 
-			throw new NullPointerException("ÇëÖ¸¶¨ĞèÒª½âÎöµÄXML×Ö·û´®");
+			throw new NullPointerException("è¯·æŒ‡å®šéœ€è¦è§£æçš„XMLå­—ç¬¦ä¸²");
 		
 		ByteArrayInputStream is = null;
 		try {
@@ -103,9 +103,9 @@ public class XmlManipulateDom implements XmlManipulateImp {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer = tf.newTransformer();
 			DOMSource source = new DOMSource(document);
-			//ÉèÖÃ±àÂë
+			//è®¾ç½®ç¼–ç 
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			//ÊÇ·ñ½øĞĞ´úÂëËõ½ø
+			//æ˜¯å¦è¿›è¡Œä»£ç ç¼©è¿›
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			PrintWriter pw = new PrintWriter(new FileOutputStream(outputFilePath));
 			streamResult = new StreamResult(pw);
@@ -114,7 +114,7 @@ public class XmlManipulateDom implements XmlManipulateImp {
 			pw.close();
 			return obj;
 		} catch (ParserConfigurationException e) {
-			throw new Exception("³õÊ¼»¯DOMÒì³££¨0x10001£©", e);
+			throw new Exception("åˆå§‹åŒ–DOMå¼‚å¸¸ï¼ˆ0x10001ï¼‰", e);
 		} catch (Exception e) {
 			throw e;
 		}

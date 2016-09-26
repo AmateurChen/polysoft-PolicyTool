@@ -10,13 +10,13 @@ import com.polysoft.utils.RegexUtil;
 
 public class Md5XmlInfo implements OperationXmlInfoImp {
 
-	// ÊÇ·ñÎª±ØĞëÉı¼¶1£¬0
+	// æ˜¯å¦ä¸ºå¿…é¡»å‡çº§1ï¼Œ0
 	protected String isUpdate;
-	//Â·¾¶ /nci/...
+	//è·¯å¾„ /nci/...
 	protected String path;
-	//ÎÄ¼şµÄmd5
+	//æ–‡ä»¶çš„md5
 	protected String md5;
-	// ÎÄ¼şµÄ´óĞ¡
+	// æ–‡ä»¶çš„å¤§å°
 	private long size;
 
 	

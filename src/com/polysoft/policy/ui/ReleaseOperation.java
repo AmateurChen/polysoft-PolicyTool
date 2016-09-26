@@ -31,17 +31,17 @@ public class ReleaseOperation {
 	public static void main(String[] args) {
 		
 		ReleaseInfo info = new ReleaseInfo();
-		// ·¢²¼»·¾³
-		info.setEnvironment("17¼¼Êõ²âÊÔ»·¾³");
-		// ·¢²¼°æ±¾
+		// å‘å¸ƒç¯å¢ƒ
+		info.setEnvironment("17æŠ€æœ¯æµ‹è¯•ç¯å¢ƒ");
+		// å‘å¸ƒç‰ˆæœ¬
 		info.setVersion("2.001.20160926001");
-		// ·¢²¼ÄÚÈİ
+		// å‘å¸ƒå†…å®¹
 		info.setContent("11");
-		// ±¸·İÄ¿Â¼
+		// å¤‡ä»½ç›®å½•
 		info.setBackupsFileDir("E:/cxtest/backups");
-		// ·¢²¼ÖÁ·şÎñ¶ËÄ¿Â¼
+		// å‘å¸ƒè‡³æœåŠ¡ç«¯ç›®å½•
 		info.setReleaseServerDir("/cxtest/server/transferServer1/deploy/ROOT.war/file/update/all2.0");
-		// ·¢²¼ÎÄ¼şÄ¿Â¼
+		// å‘å¸ƒæ–‡ä»¶ç›®å½•
 		info.setReleaseFileDir("E:/cxtest/releaseDir");
 		
 		ReleaseOperation operation = new ReleaseOperation();
@@ -60,25 +60,25 @@ public class ReleaseOperation {
 	
 	private void clickRelease(ReleaseInfo info) {
 		this.initBackupsFilePath(info);
-		System.out.println("==> " + "¿ªÊ¼±¸·İÎÄ¼ş");
-		//±¸·İ
+		System.out.println("==> " + "å¼€å§‹å¤‡ä»½æ–‡ä»¶");
+		//å¤‡ä»½
 		this.sftpImp.downloadFile(new SFTPDownLocalyPathFile(info));
-		System.out.println("==> " + "±¸·İÎÄ¼şÍê³É");
-		System.out.println("==> " + "¿ªÊ¼ÉÏ´«ÎÄ¼ş");
-		//ÉÏ´«ÎÄ¼ş
+		System.out.println("==> " + "å¤‡ä»½æ–‡ä»¶å®Œæˆ");
+		System.out.println("==> " + "å¼€å§‹ä¸Šä¼ æ–‡ä»¶");
+		//ä¸Šä¼ æ–‡ä»¶
 		this.sftpImp.uploadFile(new SFTPUpload(info));
-		System.out.println("==> " + "ÉÏ´«ÎÄ¼şÍê³É");
+		System.out.println("==> " + "ä¸Šä¼ æ–‡ä»¶å®Œæˆ");
 		
 		MD5FileUtil md5util = new MD5FileUtil();
 		String md5XmlConfigMd5 = null;
 		String productMd5ConfigMd5 = null;
 		
-		System.out.println("==> " + "¿ªÊ¼»ñÈ¡·¢²¼ÎÄ¼şµÄmd5Öµ");
-		// ¿ªÊ¼Éú³ÉÅäÖÃÎÄ¼ş
+		System.out.println("==> " + "å¼€å§‹è·å–å‘å¸ƒæ–‡ä»¶çš„md5å€¼");
+		// å¼€å§‹ç”Ÿæˆé…ç½®æ–‡ä»¶
 		ReleaseFile releaseFile = new ReleaseFile(info.getReleaseFileDir());
-		System.out.println("==> " + "·¢²¼ÎÄ¼şµÄmd5Öµ»ñÈ¡Íê³É");
+		System.out.println("==> " + "å‘å¸ƒæ–‡ä»¶çš„md5å€¼è·å–å®Œæˆ");
 		Map<String, OperationXmlInfoImp> md5Map = releaseFile.getMd5Map();
-		if(!md5Map.isEmpty()) {// Éú³Émd5ÅäÖÃÎÄ¼ş
+		if(!md5Map.isEmpty()) {// ç”Ÿæˆmd5é…ç½®æ–‡ä»¶
 			Map<String, OperationXmlInfoImp> serverMd5Map = this.serverConfig.getMd5Map();
 			this.mergeXmlInfo(serverMd5Map, md5Map);
 			
@@ -92,7 +92,7 @@ public class ReleaseOperation {
 		}
 		
 		Map<String, OperationXmlInfoImp> productMd5Map = releaseFile.getProductMd5Map();
-		if(!productMd5Map.isEmpty()) {// Éú³É productMd5ÅäÖÃÎÄ¼ş
+		if(!productMd5Map.isEmpty()) {// ç”Ÿæˆ productMd5é…ç½®æ–‡ä»¶
 			Map<String, OperationXmlInfoImp> serverProductMd5Map = this.serverConfig.getProductMd5Map();
 			this.mergeXmlInfo(serverProductMd5Map, productMd5Map);
 			
@@ -106,18 +106,18 @@ public class ReleaseOperation {
 		}
 		
 		if(!TextUtil.isEmpty(md5XmlConfigMd5) || !TextUtil.isEmpty(productMd5ConfigMd5)) {
-			//ĞŞ¸ÄMd5ÅäÖÃÎÄ¼ş
+			//ä¿®æ”¹Md5é…ç½®æ–‡ä»¶
 			this.serverConfig.setMd5Config(md5XmlConfigMd5, productMd5ConfigMd5);
 			String filePath = this.serverConfig.saveMd5Config(info.getReleaseFileDir());
 			String md5ConfigFilePath = this.serverConfig.getServerConfigInfo().getMd5ConfigFilePath();
 			String serverPath = new File(md5ConfigFilePath).getParent().replaceAll("[\\\\]+", "/");
-			// ÉÏ´«ÅäÖÃÎÄ¼ş
+			// ä¸Šä¼ é…ç½®æ–‡ä»¶
 			this.sftpImp.uploadFile(serverPath, filePath);
 		}
 		
 		String serverVersion = this.serverConfig.getServerVersion();
-		if(!info.getVersion().startsWith(serverVersion)) {// Óë·şÎñ¶Ë°æ±¾²»Ò»ÖÂ
-			//ĞŞ¸Ä°æ±¾ÅäÖÃÎÄ¼ş ²¢ÉÏ´«
+		if(!info.getVersion().startsWith(serverVersion)) {// ä¸æœåŠ¡ç«¯ç‰ˆæœ¬ä¸ä¸€è‡´
+			//ä¿®æ”¹ç‰ˆæœ¬é…ç½®æ–‡ä»¶ å¹¶ä¸Šä¼ 
 			this.uploadVersionConfig(info.getVersion(), info.getReleaseFileDir());
 			this.uploadUpdateVersionConfig(info.getVersion(), info.getReleaseFileDir());
 		}
@@ -125,7 +125,7 @@ public class ReleaseOperation {
 		this.serverConfig.backupsDownloadConfigFile(info.getBackupsFileDir());
 		File compressFiles = new File(info.getBackupsFileDir());
 		ZipUtil.compressFiles(compressFiles, compressFiles.getParentFile(), compressFiles.getName(), "polysoft");
-		System.out.println("==> " + "Ñ¹ËõÎÄ¼şÍê³É");
+		System.out.println("==> " + "å‹ç¼©æ–‡ä»¶å®Œæˆ");
 		compressFiles.delete();
 	}
 	
@@ -188,33 +188,33 @@ public class ReleaseOperation {
 	public String checkReleaseInfo(ReleaseInfo info) {
 		StringBuffer sb = new StringBuffer();
 		if(TextUtil.isEmpty(info.getEnvironment())) {
-			sb.append("·¢²¼»·¾³Î´Ñ¡Ôñ" + "\n");
+			sb.append("å‘å¸ƒç¯å¢ƒæœªé€‰æ‹©" + "\n");
 		} 
 		if(TextUtil.isEmpty(info.getContent())) {
-			sb.append("·¢²¼ÄÚÈİÎ´ÌîĞ´" + "\n");
+			sb.append("å‘å¸ƒå†…å®¹æœªå¡«å†™" + "\n");
 		}
 		if(TextUtil.isEmpty(info.getVersion())) {
-			sb.append("·¢²¼°æ±¾ÄÚÈİÎ´ÌîĞ´" + "\n");
+			sb.append("å‘å¸ƒç‰ˆæœ¬å†…å®¹æœªå¡«å†™" + "\n");
 		}
 		
 		String releaseServerDir = info.getReleaseServerDir();
 		if(TextUtil.isEmpty(releaseServerDir)) {
-			sb.append("·¢²¼ÖÁ·şÎñ¶ËÄ¿Â¼Î´ÌîĞ´" + "\n");
+			sb.append("å‘å¸ƒè‡³æœåŠ¡ç«¯ç›®å½•æœªå¡«å†™" + "\n");
 		} else if(FileUtil.isFile(releaseServerDir)) {
-			sb.append("·¢²¼ÖÁ·şÎñ¶ËÄ¿Â¼²»ÄÜÎªÎÄ¼şµØÖ·£¬±ØĞëÎªÄ¿Â¼µØÖ·" + "\n");
+			sb.append("å‘å¸ƒè‡³æœåŠ¡ç«¯ç›®å½•ä¸èƒ½ä¸ºæ–‡ä»¶åœ°å€ï¼Œå¿…é¡»ä¸ºç›®å½•åœ°å€" + "\n");
 		}
 		String backupsFileDir = info.getBackupsFileDir();
 		if(TextUtil.isEmpty(backupsFileDir)) {
-			sb.append("±¸·İÄ¿Â¼Î´ÌîĞ´" + "\n");
+			sb.append("å¤‡ä»½ç›®å½•æœªå¡«å†™" + "\n");
 		} else if(FileUtil.isFile(backupsFileDir)) {
-			sb.append("±¸·İÄ¿Â¼²»ÄÜÎªÎÄ¼şµØÖ·£¬±ØĞëÎªÄ¿Â¼µØÖ·" + "\n");
+			sb.append("å¤‡ä»½ç›®å½•ä¸èƒ½ä¸ºæ–‡ä»¶åœ°å€ï¼Œå¿…é¡»ä¸ºç›®å½•åœ°å€" + "\n");
 		}
 		
 		String releaseFileDir = info.getReleaseFileDir();
 		if(TextUtil.isEmpty(releaseFileDir)) {
-			sb.append("·¢²¼ÎÄ¼şÄ¿Â¼Î´ÌîĞ´" + "\n");
+			sb.append("å‘å¸ƒæ–‡ä»¶ç›®å½•æœªå¡«å†™" + "\n");
 		} else if(FileUtil.isFile(releaseFileDir)) {
-			sb.append("·¢²¼ÎÄ¼şÄ¿Â¼²»ÄÜÎªÎÄ¼şµØÖ·£¬±ØĞëÎªÄ¿Â¼µØÖ·" + "\n");
+			sb.append("å‘å¸ƒæ–‡ä»¶ç›®å½•ä¸èƒ½ä¸ºæ–‡ä»¶åœ°å€ï¼Œå¿…é¡»ä¸ºç›®å½•åœ°å€" + "\n");
 		}
 		
 		return sb.toString();

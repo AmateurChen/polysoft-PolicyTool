@@ -2,23 +2,23 @@ package com.polysoft.policy.release;
 
 public class ReleaseInfo {
 
-	// ·¢²¼»·¾³
+	// å‘å¸ƒç¯å¢ƒ
 	String environment;
-	// ·¢²¼°æ±¾
+	// å‘å¸ƒç‰ˆæœ¬
 	String version;
-	// ·¢²¼ÄÚÈİ
+	// å‘å¸ƒå†…å®¹
 	String content;
-	// ±¾µØ·¢²¼ÎÄ¼şÄ¿Â¼
+	// æœ¬åœ°å‘å¸ƒæ–‡ä»¶ç›®å½•
 	String releaseFileDir;
-	// ÎÄ¼ş±¸·İÄ¿Â¼£¬±¸·İ·şÎñÆ÷ÉÏ½«±»Ìæ»»µÄÎÄ¼ş
+	// æ–‡ä»¶å¤‡ä»½ç›®å½•ï¼Œå¤‡ä»½æœåŠ¡å™¨ä¸Šå°†è¢«æ›¿æ¢çš„æ–‡ä»¶
 	String backupsFileDir;
-	// ·¢²¼ÎÄ¼ş¶ÔÓ¦·şÎñÆ÷ÉÏµÄÄ¿Â¼
+	// å‘å¸ƒæ–‡ä»¶å¯¹åº”æœåŠ¡å™¨ä¸Šçš„ç›®å½•
 	String releaseServerDir;
 	
 	public static ReleaseInfo getReleaseInfo() {
-		String environment = "17¼¼Êõ²âÊÔ»·¾³";
+		String environment = "17æŠ€æœ¯æµ‹è¯•ç¯å¢ƒ";
 		String version = "2.001.20160922001";
-		String content = "ĞŞ¸´¸÷ÖÖÎÊÌâ";
+		String content = "ä¿®å¤å„ç§é—®é¢˜";
 		String releaseFileDir = "E:/cxtest/releaseDir";
 		String releaseServerDir = "/cxtest/server/transferServer1/deploy/ROOT.war/file/update/all2.0";
 		String backupsFileDir = "E:/cxtest/backups";

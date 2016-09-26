@@ -4,10 +4,10 @@ import org.w3c.dom.Document;
 
 public interface XmlManipulateDomImp {
 
-	/** XML²Ù×÷µÄ¸ù½Úµã*/
+	/** XMLæ“ä½œçš„æ ¹èŠ‚ç‚¹*/
 	public Object manipulate(Document document);
 	
-	/** »ñÈ¡XMLĞèÒª²Ù×÷µÄ¶ÔÏó£¬ÊäÈëÊä³ö ÎÄ¼şµÄÂ·¾¶¡¢ÎÄ¼ş¡¢ÎÄ¼şÁ÷¡£¾ßÌåÀàĞÍĞè¿´ÊµÏÖÀà*/
+	/** è·å–XMLéœ€è¦æ“ä½œçš„å¯¹è±¡ï¼Œè¾“å…¥è¾“å‡º æ–‡ä»¶çš„è·¯å¾„ã€æ–‡ä»¶ã€æ–‡ä»¶æµã€‚å…·ä½“ç±»å‹éœ€çœ‹å®ç°ç±»*/
 	public Object getManipulateObj();
 	
 }

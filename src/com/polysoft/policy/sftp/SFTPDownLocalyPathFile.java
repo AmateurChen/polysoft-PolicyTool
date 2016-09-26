@@ -50,14 +50,14 @@ public class SFTPDownLocalyPathFile implements SFTPDownImp {
 	
 	private String getServerFilePath(File file) {
 		String absolutePath = file.getAbsolutePath().replaceAll("[\\\\]", "/");
-		//°Ñ±¾µØµÄ·¢²¼Ä¿Â¼µØÖ· Ìæ»» Îª·şÎñµØÖ·£¬ĞÎ³ÉÒ»¸öÍê³ÉµÄ·şÎñÎÄ¼şµØÖ·
+		//æŠŠæœ¬åœ°çš„å‘å¸ƒç›®å½•åœ°å€ æ›¿æ¢ ä¸ºæœåŠ¡åœ°å€ï¼Œå½¢æˆä¸€ä¸ªå®Œæˆçš„æœåŠ¡æ–‡ä»¶åœ°å€
 		return absolutePath.replaceAll(this.releaseFileDir, this.releaseServerPath);
 	}
 	
 	private String getDownFileOutPath(File file) {
 		String absolutePath = file.getAbsolutePath().replaceAll("[\\\\]", "/");
 		String outFilePath = absolutePath.replaceAll(this.releaseFileDir, this.outRootPath);
-		// Èç¹ûÊä³öÄ¿Â¼²»´æÔÚ£¬Ôò´´½¨Ä¿Â¼
+		// å¦‚æœè¾“å‡ºç›®å½•ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»ºç›®å½•
 		File outFile = new File(outFilePath);
 		if(!outFile.getParentFile().exists())
 			outFile.getParentFile().mkdirs();

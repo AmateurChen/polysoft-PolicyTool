@@ -1,5 +1,5 @@
 /**
- * ¸ÃÀàÓÃÓÚ»ñÈ¡ÎÄ¼şµÄMD5Öµ
+ * è¯¥ç±»ç”¨äºè·å–æ–‡ä»¶çš„MD5å€¼
  * @author cx
  */
 package com.polysoft.utils;
@@ -26,13 +26,13 @@ public class MD5FileUtil {
 	}
 	
 	/**
-	 * »ñÈ¡ÎÄ¼şµÄMD5Öµ
+	 * è·å–æ–‡ä»¶çš„MD5å€¼
 	 * 
 	 * @param file
-	 *            ÎÄ¼şµÄ¾ø¶ÔÂ·¾¶
-	 * @return ·µ»Ø MD5Öµ ×Ö·û´®ĞÎÊ½
+	 *            æ–‡ä»¶çš„ç»å¯¹è·¯å¾„
+	 * @return è¿”å› MD5å€¼ å­—ç¬¦ä¸²å½¢å¼
 	 * @throws IOException
-	 *             ÎÄ¼şÎ´ÕÒµ½Å×Òì³£
+	 *             æ–‡ä»¶æœªæ‰¾åˆ°æŠ›å¼‚å¸¸
 	 */
 	public String getFileMD5StringWithUpdateVersion(File file) {
 		FileInputStream in = null;
@@ -61,13 +61,13 @@ public class MD5FileUtil {
 	}
 
 	/**
-	 * »ñÈ¡ÎÄ¼şµÄMD5Öµ
+	 * è·å–æ–‡ä»¶çš„MD5å€¼
 	 * 
 	 * @param file
-	 *            ÎÄ¼şµÄ¾ø¶ÔÂ·¾¶
-	 * @return ·µ»Ø MD5Öµ ×Ö·û´®ĞÎÊ½
+	 *            æ–‡ä»¶çš„ç»å¯¹è·¯å¾„
+	 * @return è¿”å› MD5å€¼ å­—ç¬¦ä¸²å½¢å¼
 	 * @throws IOException
-	 *             ÎÄ¼şÎ´ÕÒµ½Å×Òì³£
+	 *             æ–‡ä»¶æœªæ‰¾åˆ°æŠ›å¼‚å¸¸
 	 */
 	public String getFileMD5String(File file){
 		String resultMd5 = null;

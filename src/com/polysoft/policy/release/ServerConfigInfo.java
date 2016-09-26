@@ -4,15 +4,15 @@ import com.polysoft.utils.TextUtil;
 
 public class ServerConfigInfo {
 
-	// »·¾³±êÊ¶
+	// ç¯å¢ƒæ ‡è¯†
 	private String environment;
-	// iP µØÖ·
+	// iP åœ°å€
 	private String host;
-	// ¶Ë¿Ú
+	// ç«¯å£
 	private int port;
-	// ÓÃ»§Ãû
+	// ç”¨æˆ·å
 	private String username;
-	// ÃÜÂë
+	// å¯†ç 
 	private String password;
 	
 	private String serverRootPath;

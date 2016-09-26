@@ -27,14 +27,14 @@ public class ZipUtil {
 	
 	public static void compressFiles(File compressFile, File outDirectory, String fileName, String password) {
 		if(!FileUtil.isExists(compressFile)) {
-			System.err.println("ÐèÒªÑ¹ËõµÄÎÄ¼þÎ´ÕÒµ½===>" + compressFile.getAbsolutePath());
+			System.err.println("éœ€è¦åŽ‹ç¼©çš„æ–‡ä»¶æœªæ‰¾åˆ°===>" + compressFile.getAbsolutePath());
 			return ;
 		} else if(!FileUtil.isDirectory(outDirectory)) {
-			System.err.println("Ñ¹ËõÊä³öµØÖ·±ØÐëÎªÄ¿Â¼µØÖ·===>" + outDirectory.getAbsolutePath());
+			System.err.println("åŽ‹ç¼©è¾“å‡ºåœ°å€å¿…é¡»ä¸ºç›®å½•åœ°å€===>" + outDirectory.getAbsolutePath());
 			return ;
 		} else if(!FileUtil.isExists(outDirectory)) {
 			if(!outDirectory.mkdirs()){
-				System.err.println("Ñ¹ËõÊä³öµØÖ·´´½¨´íÎó===>" + outDirectory.getAbsolutePath());
+				System.err.println("åŽ‹ç¼©è¾“å‡ºåœ°å€åˆ›å»ºé”™è¯¯===>" + outDirectory.getAbsolutePath());
 			}
 			return ;
 		} else if(TextUtil.isEmpty(fileName)) {
