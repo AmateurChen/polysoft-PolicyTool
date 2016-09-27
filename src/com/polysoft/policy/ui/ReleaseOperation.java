@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.jcraft.jsch.SftpException;
 import com.polysoft.policy.imp.OperationXmlInfoImp;
 import com.polysoft.policy.release.PathTool;
 import com.polysoft.policy.release.ReleaseFile;
@@ -37,76 +38,91 @@ public class ReleaseOperation {
 	
 	public void clickRelease() {
 		this.initBackupsFilePath(info);
-		System.out.println("==> " + "开始备份文件");
-		//备份
-		this.sftpImp.downloadFile(new SFTPDownLocalyPathFile(info));
-		System.out.println("==> " + "备份文件完成");
-		System.out.println("==> " + "开始上传文件");
-		//上传文件
-		this.sftpImp.uploadFile(new SFTPUpload(info));
-		System.out.println("==> " + "上传文件完成");
-		
-		MD5FileUtil md5util = new MD5FileUtil();
-		String md5XmlConfigMd5 = null;
-		String productMd5ConfigMd5 = null;
-		
-		System.out.println("==> " + "开始获取发布文件的md5值");
-		// 开始生成配置文件
-		ReleaseFile releaseFile = new ReleaseFile(info.getReleaseFileDir());
-		System.out.println("==> " + "发布文件的md5值获取完成");
-		Map<String, OperationXmlInfoImp> md5Map = releaseFile.getMd5Map();
-		if(!md5Map.isEmpty()) {// 生成md5配置文件
-			Map<String, OperationXmlInfoImp> serverMd5Map = this.serverConfig.getMd5Map();
-			this.mergeXmlInfo(serverMd5Map, md5Map);
+		try {
+			System.out.println("==> " + "开始备份文件");
+			//备份
+			this.sftpImp.downloadFile(new SFTPDownLocalyPathFile(info));
+			System.out.println("==> " + "备份文件完成");
+			System.out.println("==> " + "开始上传文件");
+			//上传文件
+			this.sftpImp.uploadFile(new SFTPUpload(info));
+			System.out.println("==> " + "上传文件完成");
 			
-			String xmlOutPath = info.getReleaseFileDir() + "/" + this.serverConfig.getMd5ConfigName();
+			MD5FileUtil md5util = new MD5FileUtil();
+			String md5XmlConfigMd5 = null;
+			String productMd5ConfigMd5 = null;
 			
-			ServerConfigInfo configInfo = this.serverConfig.getServerConfigInfo();
-			String serverPath = new File(configInfo.getMd5FilePath()).getParent();
+			System.out.println("==> " + "开始获取发布文件的md5值");
+			// 开始生成配置文件
+			ReleaseFile releaseFile = new ReleaseFile(info.getReleaseFileDir());
+			System.out.println("==> " + "发布文件的md5值获取完成");
+			Map<String, OperationXmlInfoImp> md5Map = releaseFile.getMd5Map();
+			if(!md5Map.isEmpty()) {// 生成md5配置文件
+				Map<String, OperationXmlInfoImp> serverMd5Map = this.serverConfig.getMd5Map();
+				this.mergeXmlInfo(serverMd5Map, md5Map);
+				
+				String xmlOutPath = info.getReleaseFileDir() + "/" + this.serverConfig.getMd5ConfigName();
+				
+				ServerConfigInfo configInfo = this.serverConfig.getServerConfigInfo();
+				String serverPath = new File(configInfo.getMd5FilePath()).getParent();
+				
+				this.uploadMd5Config(serverMd5Map, xmlOutPath, serverPath);
+				md5XmlConfigMd5 = md5util.getFileMD5String(new File(xmlOutPath));
+			}
 			
-			this.uploadMd5Config(serverMd5Map, xmlOutPath, serverPath);
-			md5XmlConfigMd5 = md5util.getFileMD5String(new File(xmlOutPath));
+			Map<String, OperationXmlInfoImp> productMd5Map = releaseFile.getProductMd5Map();
+			if(!productMd5Map.isEmpty()) {// 生成 productMd5配置文件
+				Map<String, OperationXmlInfoImp> serverProductMd5Map = this.serverConfig.getProductMd5Map();
+				this.mergeXmlInfo(serverProductMd5Map, productMd5Map);
+				
+				String xmlOutPath = info.getReleaseFileDir() + "/" + this.serverConfig.getProductMd5ConfigName();
+				
+				ServerConfigInfo configInfo = this.serverConfig.getServerConfigInfo();
+				String serverPath = new File(configInfo.getProductMd5FilePath()).getParent();
+				
+				this.uploadMd5Config(serverProductMd5Map, xmlOutPath, serverPath);
+				productMd5ConfigMd5 = md5util.getFileMD5String(new File(xmlOutPath));
+			}
+			
+			if(!TextUtil.isEmpty(md5XmlConfigMd5) || !TextUtil.isEmpty(productMd5ConfigMd5)) {
+				//修改Md5配置文件
+				this.serverConfig.setMd5Config(md5XmlConfigMd5, productMd5ConfigMd5);
+				String filePath = this.serverConfig.saveMd5Config(info.getReleaseFileDir());
+				String md5ConfigFilePath = this.serverConfig.getServerConfigInfo().getMd5ConfigFilePath();
+				String serverPath = new File(md5ConfigFilePath).getParent().replaceAll("[\\\\]+", "/");
+				// 上传配置文件
+				this.sftpImp.uploadFile(serverPath, filePath);
+			}
+			
+			String serverVersion = this.serverConfig.getServerVersion();
+			if(!info.getVersion().startsWith(serverVersion)) {// 与服务端版本不一致
+				//修改版本配置文件 并上传
+				this.uploadVersionConfig(info.getVersion(), info.getReleaseFileDir());
+				this.uploadUpdateVersionConfig(info.getVersion(), info.getReleaseFileDir());
+			} else {//版本一致
+				this.serverConfig.deleteLocalyServerVersionFile();
+			}
+			this.sftpImp.close();
+			
+			this.serverConfig.backupsDownloadConfigFile(info.getBackupsFileDir());
+			File compressFiles = new File(info.getBackupsFileDir());
+			ZipUtil.compressFiles(compressFiles, compressFiles.getParentFile(), compressFiles.getName()+"_down", "polysoft");
+			FileUtil.deleteFile(compressFiles);
+			
+			File compressReleaseFiles = new File(info.getReleaseFileDir());
+			ZipUtil.compressFiles(compressReleaseFiles, compressFiles.getParentFile(), compressFiles.getName()+ "_up", "polysoft");
+			FileUtil.deleteFileChild(compressReleaseFiles);
+			
+			System.out.println("==> " + "压缩文件完成");
+		} catch (Exception e) {
+			e.printStackTrace();
+			this.sftpImp.close();
 		}
 		
-		Map<String, OperationXmlInfoImp> productMd5Map = releaseFile.getProductMd5Map();
-		if(!productMd5Map.isEmpty()) {// 生成 productMd5配置文件
-			Map<String, OperationXmlInfoImp> serverProductMd5Map = this.serverConfig.getProductMd5Map();
-			this.mergeXmlInfo(serverProductMd5Map, productMd5Map);
-			
-			String xmlOutPath = info.getReleaseFileDir() + "/" + this.serverConfig.getProductMd5ConfigName();
-			
-			ServerConfigInfo configInfo = this.serverConfig.getServerConfigInfo();
-			String serverPath = new File(configInfo.getProductMd5FilePath()).getParent();
-			
-			this.uploadMd5Config(serverProductMd5Map, xmlOutPath, serverPath);
-			productMd5ConfigMd5 = md5util.getFileMD5String(new File(xmlOutPath));
-		}
 		
-		if(!TextUtil.isEmpty(md5XmlConfigMd5) || !TextUtil.isEmpty(productMd5ConfigMd5)) {
-			//修改Md5配置文件
-			this.serverConfig.setMd5Config(md5XmlConfigMd5, productMd5ConfigMd5);
-			String filePath = this.serverConfig.saveMd5Config(info.getReleaseFileDir());
-			String md5ConfigFilePath = this.serverConfig.getServerConfigInfo().getMd5ConfigFilePath();
-			String serverPath = new File(md5ConfigFilePath).getParent().replaceAll("[\\\\]+", "/");
-			// 上传配置文件
-			this.sftpImp.uploadFile(serverPath, filePath);
-		}
-		
-		String serverVersion = this.serverConfig.getServerVersion();
-		if(!info.getVersion().startsWith(serverVersion)) {// 与服务端版本不一致
-			//修改版本配置文件 并上传
-			this.uploadVersionConfig(info.getVersion(), info.getReleaseFileDir());
-			this.uploadUpdateVersionConfig(info.getVersion(), info.getReleaseFileDir());
-		}
-		
-		this.serverConfig.backupsDownloadConfigFile(info.getBackupsFileDir());
-		File compressFiles = new File(info.getBackupsFileDir());
-		ZipUtil.compressFiles(compressFiles, compressFiles.getParentFile(), compressFiles.getName(), "polysoft");
-		System.out.println("==> " + "压缩文件完成");
-		FileUtil.deleteFile(compressFiles);
 	}
 	
-	private void uploadUpdateVersionConfig(String releaseVersion, String releaseFileDir) {
+	private void uploadUpdateVersionConfig(String releaseVersion, String releaseFileDir) throws SftpException {
 		this.serverConfig.setUpdateVersion(releaseVersion, "");
 		String filePath = this.serverConfig.saveUpdateVersionConfig(releaseFileDir);
 		String updateContentsFilePath = this.serverConfig.getServerConfigInfo().getUpdateContentsFilePath();
@@ -114,7 +130,7 @@ public class ReleaseOperation {
 		this.sftpImp.uploadFile(serverPath, filePath);
 	}
 	
-	private void uploadVersionConfig(String releaseVersion, String releaseFileDir) {
+	private void uploadVersionConfig(String releaseVersion, String releaseFileDir) throws SftpException {
 		this.serverConfig.setServerVersion(releaseVersion);
 		String filePath = this.serverConfig.saveServerVersionConfig(releaseFileDir);
 		String versionConfigFilePath = this.serverConfig.getServerConfigInfo().getVersionConfigFilePath();

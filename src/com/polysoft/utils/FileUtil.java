@@ -87,7 +87,23 @@ public class FileUtil {
 			for (int i = 0; i < listFiles.length; i++) {
 				deleteFile(listFiles[i]);
 			}
+			file.delete();
 		}
+	}
+	
+	public static void deleteFileChild(File file) {
+		if(file.isFile()) {
+			file.delete();
+		} else {
+			File[] listFiles = file.listFiles();
+			for (int j = 0; j < listFiles.length; j++) {
+				deleteFile(listFiles[j]);
+			}
+		}
+	}
+	
+	public static void deleteFileChild(String filePath) {
+		deleteFileChild(new File(filePath));
 	}
 	
 	public static void deleteFile(String filePath) {
@@ -140,10 +156,11 @@ public class FileUtil {
 			return false;
 		else if(!file.isFile()) {
 			File[] listFiles = file.listFiles();
-			File outPutFileDir = new File(getDirectoryFile(fileDirectory) + "/" + file.getName());
+			File outPutFileDir = getDirectoryFile(fileDirectory);
 			for (int i = 0; i < listFiles.length; i++) {
 				moveFile(listFiles[i], outPutFileDir);
 			}
+			return true;
 		}
 		if(fileDirectory.isFile()) {
 			fileDirectory = fileDirectory.getParentFile();

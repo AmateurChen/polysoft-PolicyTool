@@ -2,6 +2,7 @@ package com.polysoft.policy.xml;
 
 import java.util.Map;
 
+import com.jcraft.jsch.SftpException;
 import com.polysoft.policy.imp.OperationXmlInfoImp;
 import com.polysoft.policy.release.PathTool;
 import com.polysoft.policy.release.ReleaseFile;
@@ -52,10 +53,20 @@ public class Md5XmlManager {
 		ServerConfigInfo serverConfig = PathTool.getServerConfig(environment);
 		SFTPOperatonImp sftpImp = new SFTPOperation(serverConfig);
 		//下载文件备份
-		sftpImp.downloadFile(new SFTPDownLocalyPathFile(serverPath, releaseFilesPath, backupsPath));
+		try {
+			sftpImp.downloadFile(new SFTPDownLocalyPathFile(serverPath, releaseFilesPath, backupsPath));
+		} catch (SftpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// 上传文件
-		sftpImp.uploadFile(new SFTPUpload(serverPath, releaseFilesPath));
+		try {
+			sftpImp.uploadFile(new SFTPUpload(serverPath, releaseFilesPath));
+		} catch (SftpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		sftpImp.close();
 	}

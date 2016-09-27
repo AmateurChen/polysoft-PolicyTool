@@ -1,9 +1,9 @@
 package com.polysoft.policy.xml;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +17,7 @@ import com.polysoft.xml.XmlManipulateImp;
 
 public class Md5XmlParser implements XmlManipulateDomImp {
 
-	private Map<String, OperationXmlInfoImp> valueMap = new HashMap<String, OperationXmlInfoImp>();
+	private Map<String, OperationXmlInfoImp> valueMap = new TreeMap<String, OperationXmlInfoImp>();
 	
 	public static void main(String[] args) {
 		String filePath = "C:\\Users\\Thinkpad\\Desktop\\md5_2.0.xml";

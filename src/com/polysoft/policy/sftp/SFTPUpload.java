@@ -2,6 +2,7 @@ package com.polysoft.policy.sftp;
 
 import java.io.File;
 
+import com.jcraft.jsch.SftpException;
 import com.polysoft.policy.release.ReleaseInfo;
 
 public class SFTPUpload implements SFTPUploadImp {
@@ -21,7 +22,7 @@ public class SFTPUpload implements SFTPUploadImp {
 	}
 	
 	@Override
-	public void uploadFiles(SFTPOperatonImp sftpImp) {
+	public void uploadFiles(SFTPOperatonImp sftpImp) throws SftpException {
 		// TODO Auto-generated method stub
 		File[] listFiles = new File(this.upFilePath).listFiles();
 		for (int i = 0; i < listFiles.length; i++) {
@@ -29,7 +30,7 @@ public class SFTPUpload implements SFTPUploadImp {
 		}
 	}
 	
-	private void upload(SFTPOperatonImp sftpImp, String upServerPathDir, File file) {
+	private void upload(SFTPOperatonImp sftpImp, String upServerPathDir, File file) throws SftpException {
 		if(file.isFile()) {
 			sftpImp.uploadFile(upServerPathDir, file.getAbsolutePath());
 		} else {

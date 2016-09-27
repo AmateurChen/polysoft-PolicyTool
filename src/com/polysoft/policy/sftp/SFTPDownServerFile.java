@@ -3,6 +3,8 @@ package com.polysoft.policy.sftp;
 import java.io.File;
 import java.util.List;
 
+import com.jcraft.jsch.SftpException;
+
 public class SFTPDownServerFile implements SFTPDownImp{
 
 	private String serverDownPath;
@@ -15,7 +17,7 @@ public class SFTPDownServerFile implements SFTPDownImp{
 	}
 	
 	@Override
-	public void downloadFiles(SFTPOperatonImp sftpImp) {
+	public void downloadFiles(SFTPOperatonImp sftpImp) throws SftpException {
 		// TODO Auto-generated method stub
 		List<SFTPFile> files = sftpImp.getDirFiles(this.serverDownPath);
 		for (SFTPFile file : files) {
@@ -23,7 +25,7 @@ public class SFTPDownServerFile implements SFTPDownImp{
 		}
 	}
 	
-	public void downFile(SFTPOperatonImp sftpImp, SFTPFile file, String outPath) {
+	public void downFile(SFTPOperatonImp sftpImp, SFTPFile file, String outPath) throws SftpException {
 		if(file.isDirectory()) {
 			File outDirFile = new File(outPath +"/"+ file.getFileName());
 			if(!outDirFile.exists()) outDirFile.mkdirs();

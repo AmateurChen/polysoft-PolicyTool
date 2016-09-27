@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jcraft.jsch.SftpException;
 import com.polysoft.policy.PropertiesInfo;
 import com.polysoft.policy.imp.OperationXmlInfoImp;
 import com.polysoft.policy.sftp.SFTPOperatonImp;
@@ -46,6 +47,12 @@ public class ServerConfigOperation {
 			this.versonProperties = initServerPropertiesConfig(config.getVersionConfigFilePath());
 		}
 		return this.versonProperties.getValue("maxVersion", "");
+	}
+	
+	public void deleteLocalyServerVersionFile() {
+		if(null != this.versonProperties) {
+			this.versonProperties.delete();
+		}
 	}
 	
 	public void setServerVersion(String version) {
@@ -101,7 +108,12 @@ public class ServerConfigOperation {
 	
 	public Map<String, OperationXmlInfoImp> getMd5Map() {
 		if(null == this.md5Map) {
-			String filePath = downServerConfigFile(config.getMd5FilePath());
+			String filePath = "";
+			try {
+				filePath = downServerConfigFile(config.getMd5FilePath());
+			} catch (SftpException e) {
+				System.err.println("文件下载失败==> "+ config.getMd5FilePath());
+			}
 			this.md5Map = initMd5XmlConfig(filePath);
 			this.md5ConfigFileName = new File(filePath).getName();
 		}
@@ -115,7 +127,12 @@ public class ServerConfigOperation {
 	
 	public Map<String, OperationXmlInfoImp> getProductMd5Map() {
 		if(null == this.productMd5Map) {
-			String filePath = downServerConfigFile(config.getProductMd5FilePath());
+			String filePath = "";
+			try {
+				filePath = downServerConfigFile(config.getProductMd5FilePath());
+			} catch (SftpException e) {
+				System.err.println("文件下载失败==> "+ config.getProductMd5FilePath());
+			}
 			this.productMd5Map = initMd5XmlConfig(filePath);
 			this.productMd5ConfigFileName = new File(filePath).getName();
 		}
@@ -123,6 +140,8 @@ public class ServerConfigOperation {
 	}
 	
 	public String getProductMd5ConfigName() {
+		if(TextUtil.isEmpty(this.productMd5ConfigFileName))
+			return "md5_product.xml";
 		return this.productMd5ConfigFileName;
 	}
 	
@@ -139,21 +158,31 @@ public class ServerConfigOperation {
 	
 	@SuppressWarnings("unchecked")
 	private Map<String, OperationXmlInfoImp> initMd5XmlConfig(String xmlFilePath) {
-		XmlManipulateImp imp = new XmlManipulateDom();
-		try {
-			return (Map<String, OperationXmlInfoImp>) imp.parser(new Md5XmlParser(), new File(xmlFilePath));
-		} catch (Exception e) {
-			e.printStackTrace();
+		File xmlFile = new File(xmlFilePath);
+		if(xmlFile.exists()) {
+			try {
+				XmlManipulateImp imp = new XmlManipulateDom();
+				return (Map<String, OperationXmlInfoImp>) imp.parser(new Md5XmlParser(), xmlFile);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return new HashMap<String, OperationXmlInfoImp>();
 	}
 	
 	private PropertiesInfo initServerPropertiesConfig(String serverPath) {
-		String filePath = this.downServerConfigFile(serverPath);
+		String filePath = null;
+		try {
+			filePath = this.downServerConfigFile(serverPath);
+		} catch (SftpException e) {
+			System.err.println("文件下载失败==> " + serverPath);
+		}
 		return new PropertiesInfo(filePath);
 	}
 	
-	private String downServerConfigFile(String serverPath) {
+	private String downServerConfigFile(String serverPath) throws SftpException {
+		if(!this.sftpImp.isExists(serverPath))
+			return "";
 		String fileName = new File(serverPath).getName();
 		String filePath = this.tempFileDirPath + "/" + fileName;
 		this.sftpImp.downloadFile(serverPath, filePath);

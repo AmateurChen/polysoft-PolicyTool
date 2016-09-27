@@ -36,34 +36,26 @@ public class SFTPOperation implements SFTPOperatonImp {
 	
 	
 	@Override
-	public void downloadFile(String serverPath, String outPath) {
+	public void downloadFile(String serverPath, String outPath) throws SftpException {
 		// TODO Auto-generated method stub
-		try {
-			this.sftp.get(serverPath, outPath);
-		} catch (SftpException e) {
-			e.printStackTrace();
-		}
+		this.sftp.get(serverPath, outPath);
 	}
 	
 	@Override
-	public void downloadFile(SFTPDownImp downImp) {
+	public void downloadFile(SFTPDownImp downImp) throws SftpException {
 		// TODO Auto-generated method stub
 		downImp.downloadFiles(this);
 	}
 
 
 	@Override
-	public void uploadFile(String serverPath, String uploadFilePath) {
+	public void uploadFile(String serverPath, String uploadFilePath) throws SftpException {
 		// TODO Auto-generated method stub
-		try {
-			this.sftp.put(uploadFilePath, serverPath);
-		} catch (SftpException e) {
-			e.printStackTrace();
-		}
+		this.sftp.put(uploadFilePath, serverPath);
 	}
 	
 	@Override
-	public void uploadFile(SFTPUploadImp uploadImp) {
+	public void uploadFile(SFTPUploadImp uploadImp) throws SftpException {
 		// TODO Auto-generated method stub
 		uploadImp.uploadFiles(this);
 	}
@@ -191,6 +183,27 @@ public class SFTPOperation implements SFTPOperatonImp {
 		} catch (SftpException e) {
 			e.printStackTrace();
 		} 
+	}
+
+
+	@Override
+	public boolean isExists(String serverFilePath) {
+		// TODO Auto-generated method stub
+		
+		if(changeDirectory(serverFilePath)) {
+			return true;
+		} else {// 若为文件地址也会失败
+			try {
+				Vector<?> vector = this.sftp.ls(serverFilePath);
+				if(vector.size() == 1) {//说明该路径是文件路径
+					return true;
+				}
+			} catch (SftpException e) {
+				
+			}
+		}
+		
+		return false;
 	}
 	
 

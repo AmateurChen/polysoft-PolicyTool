@@ -7,6 +7,7 @@ import org.w3c.dom.Element;
 import com.polysoft.policy.imp.OperationXmlInfoImp;
 import com.polysoft.utils.MD5FileUtil;
 import com.polysoft.utils.RegexUtil;
+import com.polysoft.utils.TextUtil;
 
 public class Md5XmlInfo implements OperationXmlInfoImp {
 
@@ -58,7 +59,11 @@ public class Md5XmlInfo implements OperationXmlInfoImp {
 		this.isUpdate = isUpdate;
 		this.path = path;
 		this.md5 = md5;
-		this.size = Long.parseLong(size);
+		if(!TextUtil.isEmpty(size) && size.matches("[\\d]+")) {
+			this.size = Long.parseLong(size);
+		} else {
+			this.size = 0;
+		}
 	}
 
 	@Override

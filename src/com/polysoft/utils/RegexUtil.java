@@ -6,10 +6,17 @@ import java.util.regex.Pattern;
 public class RegexUtil {
 
 	public static void main(String[] args) {
-		String path = "data/nci1/product/00181000.zip";
-		System.out.println(checkReleaseDirectory(path));
+		String path = "/data/nci1/product/00181000.zip";
+		System.out.println(replaceLastFileName(path, ""));
 	}
 	
+	public static String replaceLastFileName(String path, String replace) {
+		return path.replaceAll(getLastFileName(path, "/"), replace);
+	}
+	
+	public static String getLastFileName(String filePath, String replace) {
+		return filePath.replaceAll(".*[\\\\//]+", replace);
+	}
 	
 	public static boolean checkReleaseDirectory(String path) {
 		return path.matches(".*[/\\\\]+nci[/\\\\]+.*");
@@ -20,7 +27,7 @@ public class RegexUtil {
 		Pattern compile = Pattern.compile("[/\\\\]+nci[/\\\\]+.*");
 		Matcher matcher = compile.matcher(path);
 		while(matcher.find()) {
-			return matcher.group().replaceAll("[\\\\]+", "/");
+			return replaceSeparator(matcher.group());
 		}
 		return "";
 	}
@@ -35,4 +42,10 @@ public class RegexUtil {
 	public static boolean isProductZipPath(String path) {
 		return path.matches(".*[/\\\\]+[\\d]{8}\\.zip");
 	}
+	
+	public static String replaceSeparator(String filePath) {
+		return filePath.replaceAll("[\\\\]+", "/");
+	}
+	
+	
 }

@@ -2,6 +2,7 @@ package com.polysoft.policy.sftp;
 
 import java.io.File;
 
+import com.jcraft.jsch.SftpException;
 import com.polysoft.policy.release.ReleaseInfo;
 
 public class SFTPDownLocalyPathFile implements SFTPDownImp {
@@ -25,20 +26,23 @@ public class SFTPDownLocalyPathFile implements SFTPDownImp {
 	}
 
 	@Override
-	public void downloadFiles(SFTPOperatonImp sftpImp) {
+	public void downloadFiles(SFTPOperatonImp sftpImp) throws SftpException {
 		// TODO Auto-generated method stub
 		this.downFile(sftpImp, new File(this.releaseFileDir));
 	}
 	
-	public void downFile(SFTPOperatonImp sftpImp, File file) {
+	public void downFile(SFTPOperatonImp sftpImp, File file) throws SftpException {
 		if(file.isFile()) {
 			String serverFilePath = getServerFilePath(file);
 			String downFileOutPath = getDownFileOutPath(file);
 			
 			File localyFile = new File(downFileOutPath);
 			if(localyFile.exists()) localyFile.delete();
-			
-			sftpImp.downloadFile(serverFilePath, downFileOutPath);
+			if(sftpImp.isExists(serverFilePath)) {
+				sftpImp.downloadFile(serverFilePath, downFileOutPath);
+			} else {
+				System.out.println("服务端无此文件，不备份===>" + serverFilePath);
+			}
 			
 		} else {
 			File[] listFiles = file.listFiles();

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.polysoft.utils.FileUtil;
 import com.polysoft.utils.TextUtil;
 
 public class PropertiesInfo {
@@ -53,6 +54,10 @@ public class PropertiesInfo {
 			}
 		}
 		return "";
+	}
+	
+	public void delete() {
+		FileUtil.deleteFile(this.path);
 	}
 	
 	private Properties readProperties(String path) {
