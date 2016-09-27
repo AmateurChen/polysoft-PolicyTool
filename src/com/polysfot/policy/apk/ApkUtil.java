@@ -35,7 +35,6 @@ public class ApkUtil {
 			}
 			
 			System.out.println("getCrc32 =" + fileHeader.getCrc32());
-			fileHeader.get
 			is  = zipFile.getInputStream(fileHeader);
 			String xml = DecompileApkXml.parser(is);
 		    XmlManipulateDom dom = new XmlManipulateDom();
